@@ -4,7 +4,7 @@ function App() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('/api/hello') // Replace with your backend API endpoint
+    fetch('https://spotify-sound-explorer-cc4f60bc745e.herokuapp.com/get') // Replace with your backend API endpoint
       .then(response => response.json())
       .then(data => setMessage(data.message))
       .catch(error => console.error('Error fetching data:', error));
