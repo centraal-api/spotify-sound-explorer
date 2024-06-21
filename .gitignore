@@ -11,7 +11,6 @@ front/node_modules
 
 # Gatsby files
 .cache/
-public/
 
 # Misc
 .DS_Store
