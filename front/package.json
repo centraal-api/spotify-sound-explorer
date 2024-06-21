@@ -5,6 +5,7 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
+    "homepage": "https://centraal-api.github.io/spotify-sound-explorer/index.html",
     "dependencies": {
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
