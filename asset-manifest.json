@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.js": "/spotify-sound-explorer/index.html/static/js/main.e8668a2b.js",
-    "index.html": "/spotify-sound-explorer/index.html/index.html",
-    "main.e8668a2b.js.map": "/spotify-sound-explorer/index.html/static/js/main.e8668a2b.js.map"
+    "main.js": "/spotify-sound-explorer/static/js/main.e8668a2b.js",
+    "index.html": "/spotify-sound-explorer/index.html",
+    "main.e8668a2b.js.map": "/spotify-sound-explorer/static/js/main.e8668a2b.js.map"
   },
   "entrypoints": [
     "static/js/main.e8668a2b.js"
