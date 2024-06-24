@@ -26,6 +26,7 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 
 // Handler for the "/get" route
 func getHandler(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
 	if r.Method == http.MethodOptions {
 		return
 	}
