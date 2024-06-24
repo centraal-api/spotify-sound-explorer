@@ -8,7 +8,7 @@ function App() {
       .then(response => response.json())
       .then(data => setMessage(data.message))
       .catch(error => console.error('Error fetching data:', error));
-  }, []); // Empty dependency array ensures this effect runs once after initial render
+  }, []);
 
   return (
     <div>
