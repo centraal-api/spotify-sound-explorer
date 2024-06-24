@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -9,19 +9,29 @@ import (
 
 func enableCORS(w http.ResponseWriter) {
 	
-	w.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins (replace "*" with specific origin in production)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 }
 
+func sendJSONResponse(w http.ResponseWriter, msj string, statusCode int) {
+    w.Header().Set("Content-Type", "application/json")
+	response := map[string]string{"message": msj}
+    w.WriteHeader(statusCode)
 
-// Handler for the "/create" route
+    if err := json.NewEncoder(w).Encode(response); err != nil {
+        http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
+    }
+}
+
+
 func createHandler(w http.ResponseWriter, r *http.Request) {
 	enableCORS(w)
 	if r.Method == http.MethodOptions {
 		return
 	}
-	fmt.Fprintf(w, "Create endpoint hit!")
+
+	sendJSONResponse(w,  "Create endpoint hit!", http.StatusOK) 
 }
 
 // Handler for the "/get" route
@@ -30,7 +40,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodOptions {
 		return
 	}
-	fmt.Fprintf(w, "Get endpoint hit!")
+	sendJSONResponse(w,  "Get endpoint hit!", http.StatusOK) 
 }
 
 func main() {

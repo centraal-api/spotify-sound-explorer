@@ -1,53 +1,67 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
-func TestCreateHandler(t *testing.T) {
-	req, err := http.NewRequest("GET", "/create", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+func TestHandlers(t *testing.T) {
+    testCases := []struct {
+        name           string
+        endpoint       string
+        expectedStatus int
+        expectedMessage string
+    }{
+        {"CreateHandler", "/create", http.StatusOK, "Create endpoint hit!"},
+        {"GetHandler", "/get", http.StatusOK, "Get endpoint hit!"},
+    }
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(createHandler)
+    for _, tc := range testCases {
+        t.Run(tc.name, func(t *testing.T) {
+            req, err := http.NewRequest("GET", tc.endpoint, nil)
+            if err != nil {
+                t.Fatal(err)
+            }
 
-	handler.ServeHTTP(rr, req)
+            rr := httptest.NewRecorder()
 
-	expected := "Create endpoint hit!"
-	if rr.Body.String() != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			rr.Body.String(), expected)
-	}
+            // Determine handler based on endpoint
+            var handler http.HandlerFunc
+            switch tc.endpoint {
+            case "/create":
+                handler = createHandler
+            case "/get":
+                handler = getHandler
+            default:
+                t.Fatal("Invalid endpoint")
+            }
 
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-}
+            handler.ServeHTTP(rr, req)
 
-func TestGetHandler(t *testing.T) {
-	req, err := http.NewRequest("GET", "/get", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+            // Check status code
+            if status := rr.Code; status != tc.expectedStatus {
+                t.Errorf("handler returned wrong status code: got %v want %v",
+                    status, tc.expectedStatus)
+            }
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(getHandler)
+            // Check Content-Type
+            if contentType := rr.Header().Get("Content-Type"); contentType != "application/json" {
+                t.Errorf("handler returned wrong content type: got %v want %v",
+                    contentType, "application/json")
+            }
 
-	handler.ServeHTTP(rr, req)
+            // Parse and check JSON
+            var response map[string]string
+            if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
+                t.Fatal(err)
+            }
 
-	expected := "Get endpoint hit!"
-	if rr.Body.String() != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			rr.Body.String(), expected)
-	}
-
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
+            if response["message"] != tc.expectedMessage {
+                t.Errorf("handler returned unexpected body: got %v want %v",
+                    response, tc.expectedMessage)
+            }
+        })
+    }
 }
